@@ -124,5 +124,40 @@ def updateOrderToDelivered(request, pk):
     
     return Response('Order was delivered')
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def createPreOrder(request):
+    try:
+        user = request.user
+        product = Product.objects.get(_id=request.data['product'])
+        pre_order = Pre_order.objects.create(
+            user=user,
+            product=product
+        )
+        serializer = PreOrderSerializer(pre_order, many=False)
+        return Response(serializer.data)
+    except:
+        return Response({'detail':'Pre order is not possible for this product'},
+            status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def getPreOrders(request):
+    pre_orders = Pre_order.objects.all()
+    serializer = PreOrderSerializer(pre_orders, many=True)
+    return Response(serializer.data)
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getUserPreOrderList(request):
+    user = request.user
+    pre_orders = user.pre_order_set.all()
+    serializer = PreOrderSerializer(pre_orders, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getCoupons(request):
+    coupons = Coupon.objects.all()
+    serializer = CouponSerializer(coupons, many=True)
+    return Response(serializer.data)

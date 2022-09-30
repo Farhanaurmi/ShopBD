@@ -85,3 +85,13 @@ class OrderSerializer(serializers.ModelSerializer):
         user = obj.user
         serializer = UserSerializer(user, many=False)
         return serializer.data
+
+class PreOrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pre_order
+        fields= '__all__'
+
+class CouponSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Coupon
+        fields= '__all__'

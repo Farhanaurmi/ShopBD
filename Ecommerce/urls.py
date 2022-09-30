@@ -30,5 +30,10 @@ urlpatterns = [
     path('order/<str:pk>/deliver', oviews.updateOrderToDelivered, name='order-deliver'),
     path('order/<str:pk>', oviews.getOrderById, name='user-order'),
     path('order/<str:pk>/pay', oviews.updateOrderToPaid, name='pay'),
+    path('pre-order', oviews.getPreOrders, name='pre-orders'),
+    path('create-pre-order', oviews.createPreOrder, name='create-pre-order'),
+    path('user-pre-order-list', oviews.getUserPreOrderList, name='user-pre-order-list'),
+    
+    path('coupon', oviews.getCoupons, name='coupons'),
     
 ]

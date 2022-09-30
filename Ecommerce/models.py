@@ -77,3 +77,23 @@ class ShippingAddress(models.Model):
 
     def __str__(self):
         return str(self.address)
+
+
+class Coupon(models.Model):
+    code = models.CharField(max_length=200, null=True, blank=True)
+    discount = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
+    _id = models.AutoField(primary_key=True, editable=False)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return str(self.code)
+
+
+class Pre_order(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
+    createdAt = models.DateTimeField(auto_now_add=True)
+    _id = models.AutoField(primary_key=True, editable=False)
+
+    def __str__(self):
+        return str(self.createdAt)

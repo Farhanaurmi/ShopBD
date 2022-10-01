@@ -156,7 +156,6 @@ def getUserPreOrderList(request):
     return Response(serializer.data)
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
 def getCoupons(request):
     coupons = Coupon.objects.all()
     serializer = CouponSerializer(coupons, many=True)

@@ -41,6 +41,7 @@ const reducer = combineReducers({
     productTopRated:productTopRatedReducer,
     cart: cartReducer,
     
+    
     userLogin: userLoginReducer,
     userRegister: userRegisterReducer,
     userDetails: userDetailsReducer,
@@ -72,6 +73,7 @@ const initialState = {
     cart: { 
         cartItems : cartItemsFromStorage,
         shippingAddress: shippingAddressFromStorage,
+        sub_total_price: 0,
     },
     userLogin: { userInfo: userInfoFromStorage }
 }

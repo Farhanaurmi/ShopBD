@@ -18,7 +18,7 @@ function PlaceOrderScreen({ history }) {
     const cart = useSelector(state => state.cart)
 
 
-    cart.itemsPrice = cart.cartItems.reduce((acc, item) => acc + item.price * item.qty, 0).toFixed(2)
+    cart.itemsPrice = cart.sub_total_price
     cart.shippingPrice = (cart.shippingAddress.country==="Dhaka" ? 80 : 120).toFixed(2)
     cart.taxPrice = Number(((0.082) * cart.itemsPrice).toFixed(2))
     cart.totalPrice = Number(cart.itemsPrice) + Number(cart.shippingPrice) + Number(cart.taxPrice)

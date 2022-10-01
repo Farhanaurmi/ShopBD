@@ -22,18 +22,31 @@ function ProfileScreen({ history }) {
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
-
+  const [preOrderlist, setPreOrderlist] = useState([]);
   const userUpdateProfile = useSelector((state) => state.userUpdateProfile);
   const { success } = userUpdateProfile;
 
   const orderListMy = useSelector((state) => state.orderListMy);
   const { loading: loadingOrders, error: errorOrders, orders } = orderListMy;
+  const getPreOrderList = async () => {
+    const res = await fetch("http://127.0.0.1:8000/api/user-pre-order-list", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    });
+    const data = await res.json();
+    console.log(data);
+    setPreOrderlist(data);
+  };
 
   useEffect(() => {
     if (!userInfo) {
       history.push("/login");
     } else {
       if (!user || !user.name || success || userInfo.id !== user._id) {
+        getPreOrderList();
         dispatch({ type: USER_UPDATE_PROFILE_RESET });
         dispatch(getUserDetails("profile"));
         dispatch(listMyOrders());
@@ -114,7 +127,7 @@ function ProfileScreen({ history }) {
         </Form>
       </Col>
 
-      <Col md={9}>
+      <Col md={7}>
         <h2>My Orders</h2>
         {loadingOrders ? (
           <Loader />
@@ -155,6 +168,55 @@ function ProfileScreen({ history }) {
               ))}
             </tbody>
           </Table>
+        )}
+      </Col>
+      <Col md={2}>
+        <h2>My Pre Orders</h2>
+        {loadingOrders ? (
+          <Loader />
+        ) : errorOrders ? (
+          <Message variant="danger">{errorOrders}</Message>
+        ) : preOrderlist.length > 0 ? (
+          <>
+          <Table striped responsive className="table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Date</th>
+                <th>Total</th>
+                <th>Paid</th>
+                <th>Delivered</th>
+                <th></th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {orders.map((order) => (
+                <tr key={order._id}>
+                  <td>{order._id}</td>
+                  <td>{order.createdAt.substring(0, 10)}</td>
+                  <td>৳{order.totalPrice}</td>
+                  <td>
+                    {order.isPaid ? (
+                      order.paidAt.substring(0, 10)
+                    ) : (
+                      <i className="fas fa-times" style={{ color: "red" }}></i>
+                    )}
+                  </td>
+                  <td>
+                    <LinkContainer to={`/order/${order._id}`}>
+                      <Button className="btn-sm">Details</Button>
+                    </LinkContainer>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+          </>
+        ) : (
+          <>
+            <Message variant="info">No Pre Orders</Message>
+          </>
         )}
       </Col>
     </Row>

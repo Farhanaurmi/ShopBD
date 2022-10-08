@@ -46,7 +46,6 @@ function ProfileScreen({ history }) {
       history.push("/login");
     } else {
       if (!user || !user.name || success || userInfo.id !== user._id) {
-        getPreOrderList();
         dispatch({ type: USER_UPDATE_PROFILE_RESET });
         dispatch(getUserDetails("profile"));
         dispatch(listMyOrders());
@@ -54,8 +53,9 @@ function ProfileScreen({ history }) {
         setName(user.name);
         setEmail(user.email);
       }
+      getPreOrderList();
     }
-  }, [dispatch, history, userInfo, user, success]);
+  }, [dispatch, history, userInfo, user, success,]);
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -73,9 +73,10 @@ function ProfileScreen({ history }) {
       setMessage("");
     }
   };
+  
   return (
     <Row>
-      <Col md={3} className="justify-content-md-center text-left">
+      <Col md={2} className="justify-content-md-center">
         <h2>User Profile</h2>
         {message && <Message variant="danger">{message}</Message>}
         {error && <Message variant="danger">{error}</Message>}
@@ -127,7 +128,7 @@ function ProfileScreen({ history }) {
         </Form>
       </Col>
 
-      <Col md={7}>
+      <Col md={6}>
         <h2>My Orders</h2>
         {loadingOrders ? (
           <Loader />
@@ -142,7 +143,6 @@ function ProfileScreen({ history }) {
                 <th>Total</th>
                 <th>Paid</th>
                 <th>Delivered</th>
-                <th></th>
               </tr>
             </thead>
 
@@ -170,53 +170,35 @@ function ProfileScreen({ history }) {
           </Table>
         )}
       </Col>
-      <Col md={2}>
+      <Col md={4}>
         <h2>My Pre Orders</h2>
         {loadingOrders ? (
           <Loader />
         ) : errorOrders ? (
           <Message variant="danger">{errorOrders}</Message>
-        ) : preOrderlist.length > 0 ? (
-          <>
+        ) : (
           <Table striped responsive className="table">
             <thead>
               <tr>
                 <th>ID</th>
                 <th>Date</th>
-                <th>Total</th>
-                <th>Paid</th>
-                <th>Delivered</th>
-                <th></th>
+                <th>UserId</th>
+                <th>ProductId</th>
               </tr>
             </thead>
 
             <tbody>
-              {orders.map((order) => (
+              {preOrderlist.map((order) => (
                 <tr key={order._id}>
                   <td>{order._id}</td>
                   <td>{order.createdAt.substring(0, 10)}</td>
-                  <td>৳{order.totalPrice}</td>
-                  <td>
-                    {order.isPaid ? (
-                      order.paidAt.substring(0, 10)
-                    ) : (
-                      <i className="fas fa-times" style={{ color: "red" }}></i>
-                    )}
-                  </td>
-                  <td>
-                    <LinkContainer to={`/order/${order._id}`}>
-                      <Button className="btn-sm">Details</Button>
-                    </LinkContainer>
-                  </td>
+                  <td>{order.user}</td>
+                  <td>{order.product}</td>
+              
                 </tr>
               ))}
             </tbody>
           </Table>
-          </>
-        ) : (
-          <>
-            <Message variant="info">No Pre Orders</Message>
-          </>
         )}
       </Col>
     </Row>

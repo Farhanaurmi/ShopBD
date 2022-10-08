@@ -23,6 +23,7 @@ function ProductScreen({ match, history }) {
   const [qty, setQty] = useState(1);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
+  const url = match.params.id;
 
   const dispatch = useDispatch();
   const [preOrderDate, setPreOrderDate] = useState();
@@ -44,16 +45,27 @@ function ProductScreen({ match, history }) {
     loading: loadingProductReview,
     success: successProductReview,
   } = productReviewCreate;
-
-  useEffect(() => {
-    if (successProductReview) {
-      setRating(0);
-      setComment("");
-      dispatch({ type: PRODUCT_CREATE_REVIEW_RESET });
+  const getPreOrderList = async () => {
+    const res = await fetch("http://127.0.0.1:8000/api/user-pre-order-list", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    });
+    const data = await res.json();
+    console.log(data);
+    for(let i=0; i<data.length; i++){
+        if(data[i].product == url){
+            console.log("true");
+            setPreOrderDate(data[i].createdAt);
+        }
     }
+    
+    // setPreOrderlist(data);
+  };
+  console.log(preOrderDate);
 
-    dispatch(listProductDetails(match.params.id));
-  }, [dispatch, match, successProductReview]);
 
   const addToCartHandler = () => {
     history.push(`/cart/${match.params.id}?qty=${qty}`);
@@ -102,6 +114,20 @@ function ProductScreen({ match, history }) {
       })
     );
   };
+
+  useEffect(() => {
+    if(userInfo){
+      getPreOrderList();
+    }
+
+    if (successProductReview) {
+      setRating(0);
+      setComment("");
+      dispatch({ type: PRODUCT_CREATE_REVIEW_RESET });
+    }
+
+    dispatch(listProductDetails(match.params.id));
+  }, [dispatch, match, successProductReview, userInfo]);
 
   return (
     <div>

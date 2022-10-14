@@ -101,9 +101,9 @@ function OrderScreen({ match, history }) {
                                 {order.shippingAddress.country}
                             </p>
                             {order.isDelivered ? (
-                                <Message variant='success'>Paid on {order.deliveredAt}</Message>
+                                <Message variant='success'>Delivered {order.deliveredAt}</Message>
                             ):(
-                                <Message variant='warning'>Not Paid</Message>
+                                <Message variant='warning'>Not Delivered</Message>
                             )}
                         </ListGroup.Item>
 
